@@ -16,7 +16,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', require('./routes/authRoutes'));
-// photo routes get mounted here in the next step
+app.use('/api/photos', require('./routes/photoRoutes'));
 
 // Must stay LAST
 app.use(notFound);

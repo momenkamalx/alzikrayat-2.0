@@ -6,14 +6,12 @@ const userSchema = new mongoose.Schema({
     required: [true, 'First name is required'],
     trim: true,
     maxlength: [50, 'First name max 50 characters'],
-    match: [/^[A-Za-z]+$/, 'First name must be letters only'],
   },
   lastName: {
     type: String,
     required: [true, 'Last name is required'],
     trim: true,
     maxlength: [50, 'Last name max 50 characters'],
-    match: [/^[A-Za-z]+$/, 'Last name must be letters only'],
   },
   email: {
     type: String,

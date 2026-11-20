@@ -3,10 +3,8 @@ const Joi = require('joi');
 
 // ---------- Schemas ----------
 const registerSchema = Joi.object({
-  firstName: Joi.string().trim().pattern(/^[A-Za-z]+$/).max(50).required()
-    .messages({ 'string.pattern.base': 'First name must be letters only' }),
-  lastName: Joi.string().trim().pattern(/^[A-Za-z]+$/).max(50).required()
-    .messages({ 'string.pattern.base': 'Last name must be letters only' }),
+  firstName: Joi.string().trim().max(50).required(),
+  lastName: Joi.string().trim().max(50).required(),
   email: Joi.string().trim().email().max(100).required(),
   password: Joi.string().min(8).max(100).required(),
 });

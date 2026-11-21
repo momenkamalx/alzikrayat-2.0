@@ -1,6 +1,7 @@
 const Photo = require('../models/Photo');
 const Comment = require('../models/Comment');
 const { saveUpload, deleteStored } = require('../storage');
+const { getIO } = require('../socket');
 
 // GET /api/photos
 const getAll = async (req, res, next) => {
@@ -46,6 +47,18 @@ const create = async (req, res, next) => {
         title,
         description,
       });
+
+      // Notify gallery viewers that a new photo was uploaded.
+      try {
+        getIO().emit('photo:uploaded', {
+          photoId: photo._id.toString(),
+          title: photo.title,
+        });
+      } catch (socketErr) {
+        // Upload must succeed even if the real-time notification fails.
+        console.error('photo upload notification failed:', socketErr.message);
+      }
+
       res.status(201).json({ success: true, photo });
     } catch (err) {
       await deleteStored(fileName); // don't leave an orphan file

@@ -55,3 +55,15 @@
   .photo-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.75rem; }
   .photo-card-list .photo-thumb { flex-basis: 110px; }
 }
+
+
+/* Live upload notification */
+.upload-toast {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}

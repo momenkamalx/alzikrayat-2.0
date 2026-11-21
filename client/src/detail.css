@@ -36,6 +36,9 @@
 .comment-form-footer { display: flex; justify-content: space-between; align-items: center; }
 .char-count { color: var(--muted); font-size: 0.85rem; }
 
+.live-badge { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-left: 0.5rem; }
+.live-badge.live-on { color: #16a34a; }
+
 /* ---------- Upload ---------- */
 .upload-card { max-width: 520px; }
 .upload-preview { max-height: 220px; width: auto; border-radius: var(--radius); margin: 0.25rem 0; }

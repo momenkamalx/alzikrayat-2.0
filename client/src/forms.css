@@ -1,0 +1,49 @@
+/* Shared form styles (login, register, and later upload + comments) */
+.auth-card {
+  max-width: 420px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.auth-form { display: flex; flex-direction: column; gap: 0.5rem; }
+.auth-form h2 { margin: 0 0 0.5rem; }
+
+label { font-weight: 600; font-size: 0.9rem; }
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font: inherit;
+  background: #fff;
+}
+input:focus,
+textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+.auth-form .btn { margin-top: 0.75rem; }
+
+.auth-switch { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.95rem; }
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary);
+  font: inherit;
+  cursor: pointer;
+}
+.link-btn:hover { text-decoration: underline; }
+
+.form-errors {
+  margin: 0 0 0.5rem;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}

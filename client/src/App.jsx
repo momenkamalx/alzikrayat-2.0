@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Gallery from './pages/Gallery';
 import PhotoDetail from './pages/PhotoDetail';
 import LoginRegister from './pages/LoginRegister';
+import Upload from './pages/Upload';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/photos/:id" element={<PhotoDetail />} />
+          <Route path="/upload" element={<Upload />} />
           <Route path="/login" element={<LoginRegister />} />
           <Route
             path="*"

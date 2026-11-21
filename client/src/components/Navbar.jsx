@@ -17,6 +17,7 @@ export default function Navbar() {
       <nav className="nav-links">
         <NavLink to="/" end>Home</NavLink>
         <NavLink to="/gallery">Gallery</NavLink>
+        {user && <NavLink to="/upload">Add Photo</NavLink>}
       </nav>
 
       <div className="nav-user">

@@ -33,7 +33,7 @@ const validate = (schema) => (req, res, next) => {
   });
 
   if (error) {
-    if (req.file) fs.unlink(req.file.path, () => {});
+    if (req.file && req.file.path) fs.unlink(req.file.path, () => {}); // only exists in disk mode
     return res.status(400).json({
       success: false,
       message: 'Validation failed',

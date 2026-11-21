@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import usePageTitle from '../usePageTitle';
 import '../home.css';
 
 export default function Home() {
   const { user } = useAuth();
+  usePageTitle('Home');
 
   return (
     <div>
@@ -11,8 +13,8 @@ export default function Home() {
         <h1>Alzikrayat</h1>
         <p className="hero-tagline">Share your memories</p>
         <p>
-          Alzikrayat is a place to keep your photos and share them with friends
-          Upload a picture and tell the story about it
+          Alzikrayat is a place to keep your photos and share it with friends
+          
         </p>
         <div className="hero-actions">
           <Link to="/gallery" className="btn">Browse the gallery</Link>

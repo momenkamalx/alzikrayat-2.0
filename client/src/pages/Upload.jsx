@@ -4,6 +4,7 @@ import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { getErrors } from '../errors';
 import FormErrors from '../components/FormErrors';
+import usePageTitle from '../usePageTitle';
 import '../forms.css';
 import '../detail.css';
 
@@ -11,6 +12,7 @@ const MAX_SIZE = 8 * 1024 * 1024; // 8MB, same limit as the server
 const TYPES = ['image/jpeg', 'image/png'];
 
 export default function Upload() {
+  usePageTitle('Add Photo');
   const { user, checking } = useAuth();
   const navigate = useNavigate();
 

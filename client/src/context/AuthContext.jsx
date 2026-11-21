@@ -36,6 +36,7 @@ export function AuthProvider({ children }) {
   const login = (token, userData) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('lastLogin', new Date().toISOString()); // for the "last login" note
     setUser(userData);
   };
 

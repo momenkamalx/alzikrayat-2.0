@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api';
 import { getErrors } from '../errors';
 import PhotoCard from '../components/PhotoCard';
+import usePageTitle from '../usePageTitle';
 import '../gallery.css';
 
 // remember the chosen layout between visits
@@ -14,6 +15,7 @@ const readView = () => {
 };
 
 export default function Gallery() {
+  usePageTitle('Gallery');
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

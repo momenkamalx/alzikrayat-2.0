@@ -1,10 +1,6 @@
-const fs = require('fs');
-const path = require('path');
 const Photo = require('../models/Photo');
 const Comment = require('../models/Comment');
-
-const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
-const removeFile = (fileName) => fs.unlink(path.join(UPLOAD_DIR, fileName), () => {});
+const { saveUpload, deleteStored } = require('../storage');
 
 // GET /api/photos
 const getAll = async (req, res, next) => {
@@ -41,16 +37,18 @@ const create = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Please choose a JPEG or PNG file' });
     }
     const { title, description } = req.body;
+    let fileName;
     try {
+      fileName = await saveUpload(req.file); // disk: already saved. gridfs: store it in MongoDB
       const photo = await Photo.create({
         userId: req.user.id,
-        fileName: req.file.filename,
+        fileName,
         title,
         description,
       });
       res.status(201).json({ success: true, photo });
     } catch (err) {
-      removeFile(req.file.filename); // don't leave an orphan file
+      await deleteStored(fileName); // don't leave an orphan file
       throw err;
     }
   } catch (err) {
@@ -68,7 +66,7 @@ const remove = async (req, res, next) => {
     if (photo.userId.toString() !== req.user.id) {
       return res.status(403).json({ success: false, message: 'You can only delete your own photos' });
     }
-    removeFile(photo.fileName);
+    await deleteStored(photo.fileName);
     await Comment.deleteMany({ photoId: photo._id });
     await photo.deleteOne();
     res.json({ success: true, message: 'Photo deleted' });

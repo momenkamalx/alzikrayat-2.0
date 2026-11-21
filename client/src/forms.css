@@ -47,3 +47,11 @@ textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
   border-radius: var(--radius);
   font-size: 0.9rem;
 }
+
+.last-login {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: center;
+}

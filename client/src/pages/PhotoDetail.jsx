@@ -6,6 +6,7 @@ import { getErrors } from '../errors';
 import { formatDate, fullName } from '../format';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';
+import usePageTitle from '../usePageTitle';
 import '../detail.css';
 
 export default function PhotoDetail() {
@@ -19,6 +20,9 @@ export default function PhotoDetail() {
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+
+  // tab title = the photo's title once loaded
+  usePageTitle(photo ? photo.title : error ? 'Photo not found' : 'Photo');
 
   // load the photo + its comments whenever the id in the address changes
   useEffect(() => {

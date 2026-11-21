@@ -1,17 +1,17 @@
-const path = require('path');
-const crypto = require('crypto');
 const multer = require('multer');
+const { isGridFs, makeFileName, UPLOAD_DIR } = require('../storage');
 
 const ALLOWED = { 'image/jpeg': 'jpg', 'image/png': 'png' };
 const MAX_SIZE = 8 * 1024 * 1024; // 8MB
 
-const storage = multer.diskStorage({
-  destination: path.join(__dirname, '..', 'uploads'),
-  // random name so files never clash or leak the original name
-  filename: (req, file, cb) => {
-    cb(null, `${crypto.randomUUID().replace(/-/g, '')}.${ALLOWED[file.mimetype]}`);
-  },
-});
+// disk mode: multer saves the file straight into server/uploads/
+// gridfs mode: multer keeps it in memory; the controller then stores it in MongoDB
+const storage = isGridFs()
+  ? multer.memoryStorage()
+  : multer.diskStorage({
+      destination: UPLOAD_DIR,
+      filename: (req, file, cb) => cb(null, makeFileName(file.mimetype)),
+    });
 
 const fileFilter = (req, file, cb) => {
   if (ALLOWED[file.mimetype]) return cb(null, true);

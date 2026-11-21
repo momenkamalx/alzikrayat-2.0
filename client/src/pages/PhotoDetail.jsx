@@ -4,9 +4,9 @@ import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import { getErrors } from '../errors';
 import { formatDate, fullName } from '../format';
+import socket from '../socket';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';
-import usePageTitle from '../usePageTitle';
 import '../detail.css';
 
 export default function PhotoDetail() {
@@ -20,9 +20,7 @@ export default function PhotoDetail() {
   const [error, setError] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState('');
-
-  // tab title = the photo's title once loaded
-  usePageTitle(photo ? photo.title : error ? 'Photo not found' : 'Photo');
+  const [live, setLive] = useState(socket.connected); // is the real-time link up?
 
   // load the photo + its comments whenever the id in the address changes
   useEffect(() => {
@@ -50,6 +48,38 @@ export default function PhotoDetail() {
     };
   }, [id]);
 
+  // Real-time: join this photo's room and listen for new comments
+  useEffect(() => {
+    socket.connect(); // does nothing if already connected
+
+    const join = () => socket.emit('photo:join', id);
+
+    const handleConnect = () => {
+      setLive(true);
+      join(); // (re)join after every connect, because rooms are lost on reconnect
+    };
+    const handleDisconnect = () => setLive(false);
+
+    const handleNewComment = (comment) => {
+      if (String(comment.photoId) !== String(id)) return; // not for this photo
+      // add it unless we already have it (the poster gets it from REST too)
+      setComments((prev) => (prev.some((c) => c._id === comment._id) ? prev : [...prev, comment]));
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('disconnect', handleDisconnect);
+    socket.on('comment:new', handleNewComment);
+    if (socket.connected) join();
+
+    // cleanup when leaving the page (or opening another photo)
+    return () => {
+      socket.emit('photo:leave', id);
+      socket.off('connect', handleConnect);
+      socket.off('disconnect', handleDisconnect);
+      socket.off('comment:new', handleNewComment);
+    };
+  }, [id]);
+
   // only the owner sees the Delete button (the server checks again)
   const isOwner = Boolean(user && photo && String(photo.userId?._id) === String(user.id));
 
@@ -67,7 +97,8 @@ export default function PhotoDetail() {
   };
 
   // new comment from CommentForm -> add to the end of the list
-  const handleCommentAdded = (comment) => setComments((prev) => [...prev, comment]);
+  const handleCommentAdded = (comment) =>
+    setComments((prev) => (prev.some((c) => c._id === comment._id) ? prev : [...prev, comment]));
 
   if (loading) return <p className="status">Loading photo...</p>;
 
@@ -106,7 +137,12 @@ export default function PhotoDetail() {
       </div>
 
       <section className="comments">
-        <h2>Comments ({comments.length})</h2>
+        <h2>
+          Comments ({comments.length}){' '}
+          <span className={live ? 'live-badge live-on' : 'live-badge'}>
+            {live ? '● Live' : '○ Offline'}
+          </span>
+        </h2>
         <CommentList comments={comments} />
 
         {user ? (

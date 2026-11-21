@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../api';
 import { getErrors } from '../errors';
 import PhotoCard from '../components/PhotoCard';
+import socket from '../socket';
 import usePageTitle from '../usePageTitle';
 import '../gallery.css';
 
@@ -21,6 +22,7 @@ export default function Gallery() {
   const [error, setError] = useState('');
   const [view, setView] = useState(readView);
   const [reloadKey, setReloadKey] = useState(0); // bump to fetch again
+  const [uploadNotice, setUploadNotice] = useState('');
 
   // fetch photos when the page opens (and again on Retry)
   useEffect(() => {
@@ -44,6 +46,28 @@ export default function Gallery() {
       cancelled = true;
     };
   }, [reloadKey]);
+
+  // Listen for uploads while the gallery is open.
+  useEffect(() => {
+    const handlePhotoUploaded = (payload) => {
+      if (!payload?.photoId) return;
+      setUploadNotice(payload.title ? `New photo uploaded: ${payload.title}` : 'A new photo was uploaded.');
+      setReloadKey((key) => key + 1);
+    };
+
+    socket.connect();
+    socket.on('photo:uploaded', handlePhotoUploaded);
+
+    return () => {
+      socket.off('photo:uploaded', handlePhotoUploaded);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!uploadNotice) return undefined;
+    const timeout = window.setTimeout(() => setUploadNotice(''), 5000);
+    return () => window.clearTimeout(timeout);
+  }, [uploadNotice]);
 
   const changeView = (next) => {
     setView(next);
@@ -77,6 +101,8 @@ export default function Gallery() {
           </button>
         </div>
       </div>
+
+      {uploadNotice && <div className="upload-toast" role="status">{uploadNotice}</div>}
 
       {loading && <p className="status">Loading photos...</p>}
 
